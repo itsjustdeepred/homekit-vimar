@@ -5,6 +5,10 @@ on:
     - cron: '0 2 * * *'
   workflow_dispatch:
 
+# Silenzia il warning di Node.js 20 forzando la versione 24
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+
 jobs:
   sync-patch-release:
     runs-on: ubuntu-latest
@@ -17,9 +21,9 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Clone Home Assistant Core (Dev branch)
+      - name: Clone Home Assistant Core (Master stable branch)
         run: |
-          git clone --depth 1 -b dev https://github.com/home-assistant/core.git ha-core
+          git clone --depth 1 -b master https://github.com/home-assistant/core.git ha-core
 
       - name: Sync homekit_controller folder
         run: |
@@ -59,5 +63,5 @@ jobs:
             
             gh release create ${{ env.VERSION }} \
               --title "Release ${{ env.VERSION }}" \
-              --notes "Automated sync with Home Assistant core updates. Vimar dimmer patch successfully applied."
+              --notes "Automated sync with Home Assistant core (master). Vimar dimmer patch successfully applied."
           fi
