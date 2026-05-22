@@ -11,7 +11,7 @@ Sfruttando le specifiche del protocollo Apple HAP, questa patch rimuove l'invio 
 Il fix è isolato e si applica **esclusivamente** se il produttore del dispositivo è valorizzato esattamente come `"Vimar"`, garantendo la totale assenza di regressioni o problemi per lampadine o accessori di altri marchi.
 
 ## Aggiornamenti Automatici
-Questo repository viene sincronizzato automaticamente ogni notte con il ramo `dev` ufficiale di Home Assistant Core. La patch viene riapplicata e iniettata sopra l'ultimo codice disponibile, garantendo un componente sempre aggiornato e compatibile con le ultime release di Home Assistant.
+Questo repository viene sincronizzato automaticamente ogni notte con il ramo `main` ufficiale di Home Assistant Core. La patch viene riapplicata e iniettata sopra l'ultimo codice disponibile, garantendo un componente sempre aggiornato e compatibile con le ultime release di Home Assistant.
 
 ## Installazione tramite HACS
 1. Apri **HACS** su Home Assistant.
