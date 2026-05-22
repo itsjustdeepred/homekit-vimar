@@ -1,0 +1,63 @@
+name: Sync Upstream, Patch and Release
+
+on:
+  schedule:
+    - cron: '0 2 * * *'
+  workflow_dispatch:
+
+jobs:
+  sync-patch-release:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - name: Checkout Custom Repo
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Clone Home Assistant Core (Dev branch)
+        run: |
+          git clone --depth 1 -b dev https://github.com/home-assistant/core.git ha-core
+
+      - name: Sync homekit_controller folder
+        run: |
+          rm -rf custom_components/homekit_controller
+          mkdir -p custom_components
+          cp -r ha-core/homeassistant/components/homekit_controller custom_components/
+          rm -rf ha-core
+
+      - name: Inject Version into manifest.json
+        run: |
+          VERSION=$(date +%Y.%m.%d)
+          sudo apt-get install jq
+          jq --arg ver "$VERSION" '. + {version: $ver}' custom_components/homekit_controller/manifest.json > tmp.json
+          mv tmp.json custom_components/homekit_controller/manifest.json
+          echo "VERSION=v$VERSION" >> $GITHUB_ENV
+
+      - name: Apply Vimar Patch
+        run: |
+          git apply vimar_fix.patch
+
+      - name: Process Commit and GitHub Release
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+          git add custom_components/
+          
+          if git diff --cached --quiet; then
+            echo "Nessun aggiornamento rilevato dall'upstream."
+          else
+            git commit -m "Sync upstream and re-apply Vimar dimmer fix (${{ env.VERSION }})"
+            git push origin main
+            
+            git tag ${{ env.VERSION }}
+            git push origin ${{ env.VERSION }}
+            
+            gh release create ${{ env.VERSION }} \
+              --title "Release ${{ env.VERSION }}" \
+              --notes "Automated sync with Home Assistant core updates. Vimar dimmer patch successfully applied."
+          fi
