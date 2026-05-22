@@ -13,8 +13,7 @@
     }
   ],
   "codeowners": [
-    "@Jc2k",
-    "@bdraco"
+    "@itsjustdeepred"
   ],
   "config_flow": true,
   "dependencies": [
