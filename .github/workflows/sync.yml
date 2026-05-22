@@ -31,11 +31,12 @@ jobs:
           cp -r ha-core/homeassistant/components/homekit_controller custom_components/
           rm -rf ha-core
 
-      - name: Inject Version into manifest.json
+      - name: Inject Version and Codeowners into manifest.json
         run: |
           VERSION=$(date +%Y.%m.%d)
           sudo apt-get install -y jq
-          jq --arg ver "$VERSION" '. + {version: $ver}' custom_components/homekit_controller/manifest.json > tmp.json
+          # Modifica il manifest inserendo la versione e impostando te come unico proprietario del codice
+          jq --arg ver "$VERSION" '. + {version: $ver, codeowners: ["@itsjustdeepred"]}' custom_components/homekit_controller/manifest.json > tmp.json
           mv tmp.json custom_components/homekit_controller/manifest.json
           echo "VERSION=v$VERSION" >> $GITHUB_ENV
 
@@ -83,7 +84,7 @@ jobs:
           if git diff --cached --quiet; then
             echo "Nessun aggiornamento rilevato dall'upstream."
           else
-            git commit -m "Sync upstream and apply Vimar dimmer fix (${{ env.VERSION }})"
+            git commit -m "Sync upstream, update codeowners and apply Vimar dimmer fix (${{ env.VERSION }})"
             git push origin main
             
             git tag ${{ env.VERSION }}
@@ -91,5 +92,5 @@ jobs:
             
             gh release create ${{ env.VERSION }} \
               --title "Release ${{ env.VERSION }}" \
-              --notes "Automated sync with Home Assistant core (master). Vimar dimmer patch successfully applied."
+              --notes "Automated sync with Home Assistant core (master). Codeowners updated to @itsjustdeepred and Vimar dimmer patch successfully applied."
           fi
