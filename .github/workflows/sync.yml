@@ -42,7 +42,7 @@ jobs:
 
       - name: Apply Vimar Patch
         run: |
-          git apply vimar_fix.patch
+          patch -p1 -l < vimar_fix.patch
 
       - name: Process Commit and GitHub Release
         env:
