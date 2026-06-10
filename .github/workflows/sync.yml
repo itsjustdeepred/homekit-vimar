@@ -61,5 +61,5 @@ jobs:
             
             gh release create ${{ env.VERSION }} \
               --title "Release ${{ env.VERSION }}" \
-              --notes "Automated sync with Home Assistant core (master). Codeowners updated to @itsjustdeepred and Vimar dimmer patch successfully applied."
+              --notes "Automatic bump to ${{ env.VERSION }}"
           fi
