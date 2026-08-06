@@ -28,11 +28,11 @@
     "commentjson"
   ],
   "requirements": [
-    "aiohomekit==3.2.20"
+    "aiohomekit==4.0.0"
   ],
   "zeroconf": [
     "_hap._tcp.local.",
     "_hap._udp.local."
   ],
-  "version": "2026.08.05"
+  "version": "2026.08.06"
 }
